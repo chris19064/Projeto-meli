@@ -1,13 +1,30 @@
 #!/usr/bin/env node
 
 const app = require('../app');
-const http = require('http');
+const fs = require('fs');
+const https = require('https');
+const express = require('express');
+
+console.log("********************************");
+const privateKey = fs.readFileSync('C:\\Program Files\\OpenSSL-Win64\\bin\\localhost.key', 'utf8');
+console.log(privateKey);
+const certificate = fs.readFileSync('C:\\Program Files\\OpenSSL-Win64\\bin\\localhost.crt', 'utf8');
+console.log(certificate);
+const credentials = { key: privateKey, cert: certificate };
 
 const port = process.env.PORT || 3000;
+
+
 app.set('port', port);
 
-const server = http.createServer(app);
-server.listen(port);
+const httpsServer = https.createServer(credentials, app);
+
+httpsServer.listen(port, () => {
+  console.log(`Servidor HTTPS rodando na porta 3000`);
+  });
+
+
+/* server.listen(port);
 server.on('error', handleError);
 server.on('listening', handleStartListening);
 
@@ -29,4 +46,4 @@ function handleError(error) {
 
 function handleStartListening() {
   console.log(`Listening on port ${server.address().port}`)
-}
+} */
