@@ -32,27 +32,22 @@ app.post('/login', (req, res) => {
     req.session.user = true;
     console.log("ate aqui beleza");
     res.redirect('/home');
+    console.log("res.redirect vai para app.get /home");
   } else {
     res.redirect('/?error=senha-incorreta');
   }
 });
 
 app.get('/home', validateToken, async (req, res) => {
-  try {
+  console.log("valida token");
+   try {
     console.log("entrou no get home");
     const meliObject = new meli.Meli(CLIENT_ID, CLIENT_SECRET, res.locals.access_token);
-    const user = await meli_get(meliObject, '/users/me');
-    const currencies = await meli_get(meliObject, '/currencies');
-    const listing_types = await meli_get(meliObject, `/sites/${user.site_id}/listing_types`);
-    res.render('home', {
-      user,
-      currencies,
-      listing_types
-    });
+    console.log (" meliObject " + meliObject);
   } catch (err) {
     console.log('Something went wrong', err);
     res.status(500).send(`Error! ${err}`);
-  }
+  } 
 });
 
 module.exports = app;
